@@ -1,0 +1,16 @@
+Information
+==================
+NetworkChat soll ein Programm werden, mit dem man in einem Netzwerk oder ueber das
+Internet zusammen chatten kann.
+Es soll mittels Layer und Designpattern eine saubere Softwarearchitektur geschaffen werden.
+Die man spaeter schnell und einfach erweitern oder aendern kann.
+
+Zuerst einmal ein paar ueberlegungen vor dem Programmieren:
+============================================================
+
+Welche Funktionen/UseCases muessen Server und Client bereitstellen?
+
+Server:
+
+Client:
+ 

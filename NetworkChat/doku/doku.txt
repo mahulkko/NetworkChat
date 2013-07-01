@@ -13,4 +13,19 @@ Welche Funktionen/UseCases muessen Server und Client bereitstellen?
 Server:
 
 Client:
+- Login(name,passwort)
+- logout()
+- register(name,passwort)
+- sendMsg(Nachricht,ToName)
+- changePasswd(oldPaswd,NewPaswd)
+- addFriend(Name)
+- removeFriend(Name)
+- makeConverenz()
+- addFriendstoConverenz()
+
+- reciveMsg()
+- getFriendRequest()
+- getactualFriends()
+- 
+
  

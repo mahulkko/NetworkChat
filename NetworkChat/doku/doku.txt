@@ -11,6 +11,11 @@ Zuerst einmal ein paar ueberlegungen vor dem Programmieren:
 Welche Funktionen/UseCases muessen Server und Client bereitstellen?
 
 Server:
+- Connect
+- Disconnect
+- SetPort
+- reciveMsg()
+- sendMsg()
 
 Client:
 - Login(name,passwort)
@@ -26,6 +31,5 @@ Client:
 - reciveMsg()
 - getFriendRequest()
 - getactualFriends()
-- 
 
  

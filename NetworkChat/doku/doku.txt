@@ -31,5 +31,7 @@ Client:
 - reciveMsg()
 - getFriendRequest()
 - getactualFriends()
+- getOnlineFriedns()
+- refreshOnlineList()
 
  

@@ -11,18 +11,18 @@ public class Connection implements IConnection {
 	
 	final int TIMEOUT = 100; 
 	
-	private Socket connection = null;		// Socket for the connection
-	private SocketAddress addr = null;  	// SocketAddress for the connection
-	private int port = -1;					// Port where the Server is running
-	private String adress = null;      		// Name of the Server DNS or Ip
-	private boolean isConnected = false;	// indicates if the server is connectet or not 
+	private Socket connection = null;			// Socket for the connection
+	private SocketAddress addr = null;			// SocketAddress for the connection
+	private int port = -1;						// Port where the Server is running
+	private String adress = null;				// Name of the Server DNS or Ip
+	private boolean isConnected = false;		// indicates if the server is connectet or not 
 	
 	// Inits at startup the parameters with the given parameter
 	public Connection(String adress, int port) {
 		this.init(adress, port);
 	}
 	
-	// Opens a connection with standard values
+	// Default Constructor without parameters, must call init after that
 	public Connection() { }
 	
 	// Set the parameter to open a connection
@@ -75,4 +75,7 @@ public class Connection implements IConnection {
 		// user must set a list to the connection to get the message
 		return "";
 	}
+	
+	// is connected implementieren
+	// getMsg() implementieren
 }

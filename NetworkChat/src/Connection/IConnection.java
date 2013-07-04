@@ -1,5 +1,7 @@
 package Connection;
 
+import java.util.concurrent.LinkedBlockingDeque;
+
 public interface IConnection {
 	
 	// Set the parameter to open a connection
@@ -15,5 +17,11 @@ public interface IConnection {
 	public boolean sendMsg(String message);
 		
 	// recive a message from the server
-	public String reciveMsg();
+	public boolean startReciveMsg(LinkedBlockingDeque<String> queue);
+	
+	// stop recive messages from the server
+	public boolean stopReciveMsg(LinkedBlockingDeque<String> queue);
+	
+	// Returns the status of the connection
+	public boolean isConnected();
 }

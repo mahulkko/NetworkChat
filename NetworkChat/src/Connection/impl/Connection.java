@@ -21,7 +21,7 @@ public class Connection implements IConnection {
 	private int port = -1;											// Port where the Server is running
 	private String adress = null;									// Name of the Server DNS or Ip
 	private boolean isConnected = false;							// indicates if the server is connectet or not 
-	private Object lock;											// Look Variable to syncronize between threads
+	private Object lock = new Object();								// Look Variable to syncronize between threads
 	private OutputStream out;										// Outputstream for the Connection
 	private BufferedReader in;										// Inputstream for the Connection
 	private LinkedList<LinkedBlockingDeque<String>> send = null;	// LinkedList for the BroadcastQueue
@@ -39,12 +39,12 @@ public class Connection implements IConnection {
 	// Set the parameter to open a connection
 	public boolean init(String adress, int port) {
 		synchronized(lock) {
-			if(this.port >= 0 && this.adress != null && !this.isConnected) {
+			if(!this.isConnected) {
 				this.connection = new Socket();
-				this.addr = new InetSocketAddress(this.adress,this.port);
 				this.adress = adress;
 				this.port = port;
 				this.send = new LinkedList<LinkedBlockingDeque<String>>();
+				this.addr = new InetSocketAddress(this.adress,this.port);
 				return true;
 			}
 		}
@@ -54,7 +54,10 @@ public class Connection implements IConnection {
 	// opens a connection to the server
 	public boolean Connect() {
 		synchronized(lock) {
-			if(this.connection != null && this.addr != null && !this.isConnected) {
+			if(this.isConnected){
+				return false;
+			}
+			if(this.addr != null) {
 				try {
 					this.connection.connect(this.addr,TIMEOUT);
 					this.in = new BufferedReader(new InputStreamReader(this.connection.getInputStream()));
@@ -77,6 +80,7 @@ public class Connection implements IConnection {
 				try {
 					this.connection.close();
 					this.isConnected = false;
+					return true;
 				} catch (IOException e) {
 					return false;
 				}

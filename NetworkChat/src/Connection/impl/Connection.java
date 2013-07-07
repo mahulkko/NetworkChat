@@ -1,9 +1,10 @@
 package Connection.impl;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
@@ -22,10 +23,14 @@ public class Connection implements IConnection {
 	private String adress = null;									// Name of the Server DNS or Ip
 	private boolean isConnected = false;							// indicates if the server is connectet or not 
 	private Object lock = new Object();								// Look Variable to syncronize between threads
-	private OutputStream out;										// Outputstream for the Connection
+	private BufferedWriter out;										// Outputstream for the Connection
 	private BufferedReader in;										// Inputstream for the Connection
 	private LinkedList<LinkedBlockingDeque<String>> send = null;	// LinkedList for the BroadcastQueue
 	private LinkedBlockingDeque<String> msg = null;					// BlockingDeque for the SendMsg Function
+	private Thread ThreadSend;										// Thread for the Send
+	private Thread ThreadRecive;									// Thread for the Recieve
+	private Recive rcv;												// Recieve Class
+	private Send snd;												// Send Class
 	
 	
 	// Inits at startup the parameters with the given parameter
@@ -61,8 +66,18 @@ public class Connection implements IConnection {
 				try {
 					this.connection.connect(this.addr,TIMEOUT);
 					this.in = new BufferedReader(new InputStreamReader(this.connection.getInputStream()));
-					this.out = this.connection.getOutputStream();
+					this.out = new BufferedWriter(new OutputStreamWriter(this.connection.getOutputStream()));
 					this.msg = new LinkedBlockingDeque<String>();
+					
+					this.snd = new Send(this.out,this.msg);
+					this.rcv = new Recive();
+					
+					this.ThreadSend = new Thread(this.snd);
+					this.ThreadSend.start();
+					
+					this.ThreadRecive = new Thread(this.rcv);
+					this.ThreadRecive.start();
+					
 					this.isConnected = true;
 					return true;
 				} catch (IOException e) {

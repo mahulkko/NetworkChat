@@ -75,8 +75,8 @@ public class Connection implements IConnection {
 					this.ThreadSend = new Thread(this.snd);
 					this.ThreadSend.start();
 					
-					this.ThreadRecive = new Thread(this.rcv);
-					this.ThreadRecive.start();
+					//this.ThreadRecive = new Thread(this.rcv);
+					//this.ThreadRecive.start();
 					
 					this.isConnected = true;
 					return true;
@@ -94,6 +94,7 @@ public class Connection implements IConnection {
 			if(this.isConnected) {
 				try {
 					this.connection.close();
+					this.snd.stop();
 					this.isConnected = false;
 					return true;
 				} catch (IOException e) {

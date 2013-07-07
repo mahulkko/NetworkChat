@@ -24,8 +24,10 @@ public class Send implements Runnable{
 	public void run() {
 		while(this.run){
 			try {
-				this.out.write(this.msg.removeFirst());
+				this.out.write(this.msg.takeFirst());
 			} catch (IOException e) {
+				// Mal sehn
+			} catch (InterruptedException e) {
 				// Mal sehn
 			}
 		}

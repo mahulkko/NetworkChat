@@ -41,6 +41,8 @@ public class ConnectionTest extends TestCase {
 		assertEquals(true, con.Connect());
 		assertEquals(true,this.con.sendMsg("nachricht"));
 		assertEquals(true,this.con.startReciveMsg(this.queue));
+		assertEquals(true,this.con.sendMsg("nachricht"));
+		assertEquals(true,this.con.sendMsg("nachricht2"));
 		assertEquals(true,this.con.stopReciveMsg(this.queue));
 		assertEquals(false, con.Connect());
 		assertEquals(true, con.isConnected());

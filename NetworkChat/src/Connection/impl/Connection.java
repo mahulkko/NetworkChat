@@ -1,10 +1,9 @@
 package Connection.impl;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
@@ -23,7 +22,7 @@ public class Connection implements IConnection {
 	private String adress = null;									// Name of the Server DNS or Ip
 	private boolean isConnected = false;							// indicates if the server is connectet or not 
 	private Object lock = new Object();								// Look Variable to syncronize between threads
-	private BufferedWriter out;										// Outputstream for the Connection
+	private PrintWriter out;										// Outputstream for the Connection
 	private BufferedReader in;										// Inputstream for the Connection
 	private LinkedList<LinkedBlockingDeque<String>> send = null;	// LinkedList for the BroadcastQueue
 	private LinkedBlockingDeque<String> msg = null;					// BlockingDeque for the SendMsg Function
@@ -43,7 +42,7 @@ public class Connection implements IConnection {
 	
 	// Set the parameter to open a connection
 	public boolean init(String adress, int port) {
-		synchronized(lock) {
+		synchronized(this.lock) {
 			if(!this.isConnected) {
 				this.connection = new Socket();
 				this.adress = adress;
@@ -58,7 +57,7 @@ public class Connection implements IConnection {
 	
 	// opens a connection to the server
 	public boolean Connect() {
-		synchronized(lock) {
+		synchronized(this.lock) {
 			if(this.isConnected){
 				return false;
 			}
@@ -66,17 +65,17 @@ public class Connection implements IConnection {
 				try {
 					this.connection.connect(this.addr,TIMEOUT);
 					this.in = new BufferedReader(new InputStreamReader(this.connection.getInputStream()));
-					this.out = new BufferedWriter(new OutputStreamWriter(this.connection.getOutputStream()));
+					this.out = new PrintWriter(this.connection.getOutputStream(), true);
 					this.msg = new LinkedBlockingDeque<String>();
 					
 					this.snd = new Send(this.out,this.msg);
-					this.rcv = new Recive();
+					this.rcv = new Recive(this.lock,this.in,this.send);
 					
 					this.ThreadSend = new Thread(this.snd);
 					this.ThreadSend.start();
 					
-					//this.ThreadRecive = new Thread(this.rcv);
-					//this.ThreadRecive.start();
+					this.ThreadRecive = new Thread(this.rcv);
+					this.ThreadRecive.start();
 					
 					this.isConnected = true;
 					return true;
@@ -90,11 +89,12 @@ public class Connection implements IConnection {
 	
 	// Closed a connection to the server
 	public boolean Disconnect() {
-		synchronized(lock) {
+		synchronized(this.lock) {
 			if(this.isConnected) {
 				try {
 					this.connection.close();
 					this.snd.stop();
+					this.rcv.stop();
 					this.isConnected = false;
 					return true;
 				} catch (IOException e) {
@@ -118,7 +118,7 @@ public class Connection implements IConnection {
 		if(this.send == null){
 			return false;
 		}
-		synchronized(lock) {
+		synchronized(this.lock) {
 			return this.send.add(queue);
 		}
 	}
@@ -128,7 +128,7 @@ public class Connection implements IConnection {
 		if(this.send == null){
 			return false;
 		}
-		synchronized(lock) {
+		synchronized(this.lock) {
 			return this.send.remove(queue);
 		}
 	}

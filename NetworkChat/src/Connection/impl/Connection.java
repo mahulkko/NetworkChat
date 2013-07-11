@@ -34,7 +34,7 @@ public class Connection implements IConnection {
 	private Send snd;												// Send Class
 	
 	
-	// Inits at startup the parameters with the given parameter
+	// Initializes at startup the parameters with the given parameter
 	public Connection(String adress, int port) {
 		this.init(adress, port);
 	}

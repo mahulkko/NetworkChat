@@ -43,8 +43,6 @@ public class Recive implements Runnable{
 				}
 			} catch (IOException e) {
 				this.isConnected.setBool(false);
-				System.out.println("Verbindung abgebrochen!");
-				System.out.println(this.isConnected.getBool());
 				this.run = false;
 			}
 		}

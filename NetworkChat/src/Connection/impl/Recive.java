@@ -5,17 +5,21 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.concurrent.LinkedBlockingDeque;
 
+import utility.Bool;
+
 public class Recive implements Runnable{
 	
 	private Object lock;
 	private BufferedReader in;
 	private LinkedList<LinkedBlockingDeque<String>> send;
 	private boolean run = true;
+	private Bool isConnected;
 	
-	public Recive(Object lock, BufferedReader in, LinkedList<LinkedBlockingDeque<String>> send) {
+	public Recive(Object lock, BufferedReader in, LinkedList<LinkedBlockingDeque<String>> send, Bool isConnected) {
 		this.lock = lock;
 		this.in = in;
 		this.send = send;
+		this.isConnected = isConnected;
 	}
 	
 	public void stop() {
@@ -38,7 +42,10 @@ public class Recive implements Runnable{
 					}
 				}
 			} catch (IOException e) {
-				e.printStackTrace();
+				this.isConnected.setBool(false);
+				System.out.println("Verbindung abgebrochen!");
+				System.out.println(this.isConnected.getBool());
+				this.run = false;
 			}
 		}
 	}

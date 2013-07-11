@@ -22,7 +22,7 @@ public class TestServer implements Runnable
 	BufferedReader in = new BufferedReader(new InputStreamReader( client.getInputStream()) );
 	PrintWriter out = new PrintWriter(client.getOutputStream(), true);
     String read = in.readLine();
-    out.println(read);
+    out.println("Hallo");
     System.out.println(read);
   }
   

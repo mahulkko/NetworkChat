@@ -10,6 +10,8 @@ import java.net.SocketAddress;
 import java.util.LinkedList;
 import java.util.concurrent.LinkedBlockingDeque;
 
+import utility.Bool;
+
 import Connection.IConnection;
 
 public class Connection implements IConnection {
@@ -20,7 +22,7 @@ public class Connection implements IConnection {
 	private SocketAddress addr = null;								// SocketAddress for the connection
 	private int port = -1;											// Port where the Server is running
 	private String adress = null;									// Name of the Server DNS or Ip
-	private boolean isConnected = false;							// indicates if the server is connectet or not 
+	private Bool isConnected = new Bool(false);			   			// indicates if the server is connectet or not 
 	private Object lock = new Object();								// Look Variable to syncronize between threads
 	private PrintWriter out;										// Outputstream for the Connection
 	private BufferedReader in;										// Inputstream for the Connection
@@ -43,7 +45,7 @@ public class Connection implements IConnection {
 	// Set the parameter to open a connection
 	public boolean init(String adress, int port) {
 		synchronized(this.lock) {
-			if(!this.isConnected) {
+			if(!this.isConnected.getBool()) {
 				this.connection = new Socket();
 				this.adress = adress;
 				this.port = port;
@@ -58,7 +60,7 @@ public class Connection implements IConnection {
 	// opens a connection to the server
 	public boolean Connect() {
 		synchronized(this.lock) {
-			if(this.isConnected){
+			if(this.isConnected.getBool()){
 				return false;
 			}
 			if(this.addr != null) {
@@ -69,15 +71,15 @@ public class Connection implements IConnection {
 					this.msg = new LinkedBlockingDeque<String>();
 					
 					this.snd = new Send(this.out,this.msg);
-					this.rcv = new Recive(this.lock,this.in,this.send);
+					this.rcv = new Recive(this.lock,this.in,this.send,this.isConnected);
 					
 					this.ThreadSend = new Thread(this.snd);
 					this.ThreadSend.start();
 					
 					this.ThreadRecive = new Thread(this.rcv);
 					this.ThreadRecive.start();
-					
-					this.isConnected = true;
+
+					this.isConnected.setBool(true);
 					return true;
 				} catch (IOException e) {
 					return false;
@@ -90,12 +92,12 @@ public class Connection implements IConnection {
 	// Closed a connection to the server
 	public boolean Disconnect() {
 		synchronized(this.lock) {
-			if(this.isConnected) {
+			if(this.isConnected.getBool()) {
 				try {
 					this.connection.close();
 					this.snd.stop();
 					this.rcv.stop();
-					this.isConnected = false;
+					this.isConnected.setBool(false);
 					return true;
 				} catch (IOException e) {
 					return false;
@@ -107,7 +109,7 @@ public class Connection implements IConnection {
 	
 	// sends a message to the server
 	public boolean sendMsg(String message) {
-		if(this.isConnected) {
+		if(this.isConnected.getBool()) {
 			return this.msg.add(message);
 		}
 		return false;
@@ -133,7 +135,8 @@ public class Connection implements IConnection {
 		}
 	}
 	
+	// returns if the server is connectet
 	public boolean isConnected() {
-		return this.isConnected;
+		return this.isConnected.getBool();
 	}
 }

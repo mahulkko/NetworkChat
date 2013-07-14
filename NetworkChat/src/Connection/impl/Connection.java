@@ -40,14 +40,14 @@ public class Connection implements IConnection {
 	}
 	
 	public boolean startReciveMsg(LinkedBlockingDeque<String> queue) {
-		return this.startReciveMsg(queue);
+		return this.cm.startReciveMsg(queue);
 	}
 	
 	public boolean stopReciveMsg(LinkedBlockingDeque<String> queue) {
-	 return this.stopReciveMsg(queue);
+	 return this.cm.stopReciveMsg(queue);
 	}
 	
 	public boolean isConnected() {
-	  return this.isConnected();
+	  return this.cm.isConnected();
 	}
 }

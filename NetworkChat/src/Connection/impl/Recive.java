@@ -13,7 +13,6 @@ public class Recive implements Runnable{
 	
 	@Override
 	public void run() {
-		System.out.println("Recive Thread gestartet!");
 		while(this.cm.isConnected()){
 			try {
 				this.buf = this.cm.in.readLine();
@@ -30,6 +29,5 @@ public class Recive implements Runnable{
 				this.cm.disconnect();
 			}
 		}
-	System.out.println("Recive Thread beendet!");
    }
 }

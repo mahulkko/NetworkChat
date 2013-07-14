@@ -10,7 +10,6 @@ public class Send implements Runnable{
 	
 	@Override
 	public void run() {
-		System.out.println("Send Thread gestartet!");
 		while(this.cm.isConnected()){
 			try {
 				this.cm.out.println(this.cm.msg.takeFirst());
@@ -18,6 +17,5 @@ public class Send implements Runnable{
 				e.printStackTrace();
 			}
 	    }
-		System.out.println("Send Thread beendet!");
 	}
 }

@@ -4,9 +4,6 @@ import java.util.concurrent.LinkedBlockingDeque;
 
 public interface IConnection {
 	
-	// Set the parameter to open a connection
-	public boolean init(String adress, int port);
-	
 	// opens a connection to the server
 	public boolean Connect();
 		

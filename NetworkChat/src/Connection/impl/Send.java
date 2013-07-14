@@ -1,33 +1,23 @@
 package Connection.impl;
 
-import java.io.PrintWriter;
-import java.util.concurrent.LinkedBlockingDeque;
-
 public class Send implements Runnable{
 	
-	private PrintWriter out;
-	private LinkedBlockingDeque<String> msg;
-	private boolean run = true;
+	private ConnectionManagement cm;
 	
-	
-	Send(PrintWriter out, LinkedBlockingDeque<String> msg) {
-		this.out = out;
-		this.msg = msg;
+	Send(ConnectionManagement cm) {
+		this.cm = cm;
 	}
 	
-	public void stop() {
-		this.run = false;
-	}
-
 	@Override
 	public void run() {
-		while(this.run){
-				try {
-					this.out.println(this.msg.takeFirst());
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-	    } 
+		System.out.println("Send Thread gestartet!");
+		while(this.cm.isConnected()){
+			try {
+				this.cm.out.println(this.cm.msg.takeFirst());
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+	    }
+		System.out.println("Send Thread beendet!");
 	}
 }

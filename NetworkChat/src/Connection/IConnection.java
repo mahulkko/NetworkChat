@@ -10,9 +10,8 @@ import java.io.BufferedReader;
 import java.io.PrintWriter;
 
 /**
- * Ethablished a connection to a server
+ * Established a connection to a server
  * @author Martin Hulkkonen
- *
  */
 public interface IConnection {
 	

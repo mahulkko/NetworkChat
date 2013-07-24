@@ -28,7 +28,7 @@ import java.net.SocketAddress;
 import Connection.IConnection;
 
 /**
- * Ethablished a connection to a server
+ * Established a connection to a server
  * @author Martin Hulkkonen
  *
  */
@@ -77,7 +77,7 @@ public class Connection implements IConnection {
 	
 	/**
 	 * Set the parameter for the connection
-	 * @param adress - Adress for the connection
+	 * @param adress - Address for the connection
 	 * @param port - Port for the connection
 	 */
 	public Connection(String adress, int port) {
@@ -118,6 +118,10 @@ public class Connection implements IConnection {
 				// Close the connection
 				this.connection.close();
 				this.isConnected = false;
+				
+				// Set the Output and InputStream to zero
+				this.in = null;
+				this.out = null;
 				return true;
 			// Error 
 			} catch (IOException e) {

@@ -5,7 +5,7 @@
  * Connection 
  * ==========
  * Makes a connection to a Server given with the parameters 
- * adress for the adress and port for the port of the server
+ * address for the address and port for the port of the server
  * 
  * Note:
  * The functions getInputStream() and getOutputStream() can return 
@@ -27,24 +27,59 @@ import java.net.SocketAddress;
 
 import Connection.IConnection;
 
+/**
+ * Ethablished a connection to a server
+ * @author Martin Hulkkonen
+ *
+ */
+
 public class Connection implements IConnection {
 	
-	// Timeout for the connect
+	/**
+	 * TimeOut for the Connection
+	 */
 	final int TIMEOUT = 100; 
 	
-	// Variable for the Connection
+	/**
+	 * Variable to proof if the Server is already connected
+	 */
 	private boolean isConnected;
+	
+	/**
+	 * Address the server is connected
+	 */
 	private String adress;
+	
+	/**
+	 * Port where the server is connected
+	 */
 	private int port;
 	
-	// Socketvariable
+	/**
+	 * Socket for the connection
+	 */
 	private Socket connection = null;
+	
+	/**
+	 * SocketAdress for the server
+	 */
 	private SocketAddress addr = null;
 	
-	// Input Output Stream
+	/**
+	 * OutputStream for the connection
+	 */
 	protected PrintWriter out;
+	
+	/**
+	 * InputStream for the connection
+	 */
 	protected BufferedReader in;
 	
+	/**
+	 * Set the parameter for the connection
+	 * @param adress - Adress for the connection
+	 * @param port - Port for the connection
+	 */
 	public Connection(String adress, int port) {
 		this.isConnected = false;
 		this.adress = adress;

@@ -68,12 +68,12 @@ public class Connection implements IConnection {
 	/**
 	 * OutputStream for the connection
 	 */
-	protected PrintWriter out;
+	private PrintWriter out;
 	
 	/**
 	 * InputStream for the connection
 	 */
-	protected BufferedReader in;
+	private BufferedReader in;
 	
 	/**
 	 * Set the parameter for the connection
@@ -85,6 +85,8 @@ public class Connection implements IConnection {
 		this.adress = adress;
 		this.port = port;
 	}
+	
+	//TODO: Add Thread for the receive message function
 		
 	@Override
 	public boolean Connect() {
@@ -132,17 +134,20 @@ public class Connection implements IConnection {
 	}
 	
 	@Override
-	public BufferedReader getInputStream() {
-		return this.in;
+	public String getMessage() {
+		return null;
 	}
 
 	@Override
-	public PrintWriter getOutputStream() {
-		return this.out;
-	}
-	
+	public void sendMessage(String msg) {
+		this.out.println(msg);
+	}	
 	@Override
 	public boolean isConnected() {
 	  return this.isConnected;
 	}
+	
+	
+
+	
 }

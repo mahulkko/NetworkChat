@@ -210,7 +210,7 @@ public class Connection implements IConnection {
 	public class ReceiveMsg implements Runnable {
 
 		/**
-		 * Function for the receiving thread to get the messages from the server
+		 * Function for the receiving thread to get the messages from the server 
 		 */
 		@Override
 		public void run() {

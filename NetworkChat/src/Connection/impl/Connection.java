@@ -201,10 +201,17 @@ public class Connection implements IConnection {
 	  return this.isConnected;
 	}
 	
-	
 	// Inner Class for the receive
+	
+	/**
+	 * Receive Message - Thread for receiving messages from the server
+	 * @author Martin Hulkkonen
+	 */
 	public class ReceiveMsg implements Runnable {
 
+		/**
+		 * Function for the receiving thread to get the messages from the server
+		 */
 		@Override
 		public void run() {
 			logMsg.info("Start new ReceiveMsg Thread");

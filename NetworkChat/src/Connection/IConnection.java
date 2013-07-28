@@ -30,10 +30,17 @@ public interface IConnection {
 	public boolean Disconnect();
 	
 	/**
-	 * Read a message from the Server
-	 * @return Returns the String of the message on success and on error null
+	 * Read a message from the Server without blocking
+	 * @return Returns the String of the message if there was a message by no message it returns null
 	 */
 	public String getMessage();
+	
+	/**
+	 * Read a message from the Server with blocking
+	 * The function is waiting until a message is coming.
+	 * @return Returns the String of the message on error it returns <b>null</b>
+	 */
+	public String getMessageBlocked();
 		
 	/**
 	 * Send a message to the server

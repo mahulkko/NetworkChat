@@ -1,14 +1,22 @@
-
-/*
- * Connection Interface - IConnection
- * Written by Martin Hulkkonen
- */
-
 package Connection;
 
+import java.util.concurrent.LinkedBlockingQueue;
+
 /**
+ * IConnection Interface - Connection
+ * <br>
+ * Written by Martin Hulkkonen
+ * <br><br>
+ * <b><u>Connection</u></b>
+ * <br>
+ * Open a connection to a Server given with the parameters 
+ * <br>
+ * address for the address and port for the port of the server
+ * <br>
  * Established a connection to a server
+ * <br>
  * @author Martin Hulkkonen
+ *
  */
 public interface IConnection {
 	
@@ -30,17 +38,18 @@ public interface IConnection {
 	public boolean Disconnect();
 	
 	/**
-	 * Read a message from the Server without blocking
-	 * @return Returns the String of the message if there was a message by no message it returns null
+	 * Insert a new LinkedBlockingQueue for receiving messages
+	 * @param queue - Queue were the messages from the server are saved
+	 * @return When the queue is successfully insert it will returns <b>true</b> on error it returns <b>false</b>
 	 */
-	public String getMessage();
+	public boolean startReceivingMessages(LinkedBlockingQueue<String> queue);
 	
 	/**
-	 * Read a message from the Server with blocking
-	 * The function is waiting until a message is coming.
-	 * @return Returns the String of the message on error it returns <b>null</b>
+	 * Get the queue to stop receiving messages to it
+	 * @param queue - Queue where should stop getting messages
+	 * @return When the queue is successfully deleted it will returns <b>true</b> on error it returns <b>false</b>
 	 */
-	public String getMessageBlocked();
+	public boolean stopReceivingMessages(LinkedBlockingQueue<String> queue);
 		
 	/**
 	 * Send a message to the server

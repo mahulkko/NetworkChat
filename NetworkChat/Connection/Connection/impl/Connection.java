@@ -1,20 +1,4 @@
 
-/* Connection Class - Connection
- * Written by Martin Hulkkonen
- * 
- * Connection 
- * ==========
- * Makes a connection to a Server given with the parameters 
- * address for the address and port for the port of the server
- * 
- * Note:
- * The functions getInputStream() and getOutputStream() can return 
- * a null pointer. 
- * With the function isConnected() you can proof if the Streams have
- * valid values.
- * 
- */
-
 package Connection.impl;
 
 import java.io.BufferedReader;
@@ -24,6 +8,7 @@ import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
+import java.util.LinkedList;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import org.apache.log4j.Logger;
@@ -31,9 +16,19 @@ import org.apache.log4j.Logger;
 import Connection.IConnection;
 
 /**
+ * Connection Class - Connection
+ * <br>
+ * Written by Martin Hulkkonen
+ * <br><br>
+ * <b><u>Connection</u></b>
+ * <br>
+ * Open a connection to a Server given with the parameters 
+ * <br>
+ * address for the address and port for the port of the server
+ * <br>
  * Established a connection to a server
+ * <br>
  * @author Martin Hulkkonen
- *
  */
 public class Connection implements IConnection {
 	
@@ -78,9 +73,14 @@ public class Connection implements IConnection {
 	private BufferedReader in;
 	
 	/**
-	 * Queue to receive messages
+	 * LinkedList to deliver received messages
 	 */
-	private LinkedBlockingQueue<String> queue;
+	private LinkedList<LinkedBlockingQueue<String>> queue;
+	
+	/**
+	 * Object for synchronized
+	 */
+	private Object lock;
 	
 	/**
 	 * Thread to receive messages
@@ -107,9 +107,9 @@ public class Connection implements IConnection {
 		this.isConnected = false;
 		this.adress = adress;
 		this.port = port;
+		this.lock = new Object();
 	}
 	
-	//TODO: Add Thread for the receive message function
 		
 	@Override
 	public boolean Connect() {
@@ -127,7 +127,7 @@ public class Connection implements IConnection {
 				log.info("Initialize Input and Output Stream for the communication");
 				this.in = new BufferedReader(new InputStreamReader(this.connection.getInputStream()));
 				this.out = new PrintWriter(this.connection.getOutputStream(), true);
-				this.queue = new LinkedBlockingQueue<String>();
+				this.queue = new LinkedList<LinkedBlockingQueue<String>>();
 				
 				// Start Receive Thread
 				log.info("Create and start a Receive Thread");
@@ -171,26 +171,20 @@ public class Connection implements IConnection {
 		return false;
 	}
 	
-	@Override
-	public String getMessage() {
-		String msg = this.queue.poll();
-		log.info("Get message from server: " + msg);
-		return msg;
+	public boolean startReceivingMessages(LinkedBlockingQueue<String> queue) {
+		synchronized(this.lock){
+			log.info("New queue added");
+			return this.queue.add(queue);
+		}
 	}
 	
-	@Override
-	public String getMessageBlocked(){
-		try {
-			String msg;
-			msg = this.queue.take();
-			log.info("Get message from Server: " + msg);
-			return msg;
-		} catch (InterruptedException e) {
-			log.error("Could not receive a message from the server");
+	public boolean stopReceivingMessages(LinkedBlockingQueue<String> queue) {
+		synchronized(this.lock){
+			log.info("Queue removed");
+			return this.queue.remove(queue);
 		}
-		return null;
 	}
-
+	
 	@Override
 	public void sendMessage(String msg) {
 		log.info("Send message to the server: " + msg);
@@ -201,12 +195,12 @@ public class Connection implements IConnection {
 	  return this.isConnected;
 	}
 	
-	// Inner Class for the receive
 	
 	/**
 	 * Receive Message - Thread for receiving messages from the server
 	 * @author Martin Hulkkonen
 	 */
+	
 	public class ReceiveMsg implements Runnable {
 
 		/**
@@ -219,14 +213,18 @@ public class Connection implements IConnection {
 				try {
 					String msg = in.readLine();
 					logMsg.info("New message from server: " + msg);
-					//TODO: If the queue is full all the next messages are lost
-					queue.offer(msg);
+					logMsg.info("Add it to the queues");
+					
+					synchronized(lock) {
+						for(int i = 0; i < queue.size(); i++) {
+							queue.get(i).add(msg);
+						}
+					}
 				} catch (IOException e) {
 					logMsg.info("Connection to server lost");
 					// Disconnect
 					Disconnect();
 					logMsg.info("Disconnect from the server and clean up");
-					queue.offer("null");
 					break;
 				}
 			}

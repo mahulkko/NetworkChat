@@ -171,6 +171,7 @@ public class Connection implements IConnection {
 		return false;
 	}
 	
+	@Override
 	public boolean startReceivingMessages(LinkedBlockingQueue<String> queue) {
 		synchronized(this.lock){
 			log.info("New queue added");
@@ -178,6 +179,7 @@ public class Connection implements IConnection {
 		}
 	}
 	
+	@Override
 	public boolean stopReceivingMessages(LinkedBlockingQueue<String> queue) {
 		synchronized(this.lock){
 			log.info("Queue removed");
@@ -213,13 +215,19 @@ public class Connection implements IConnection {
 				try {
 					String msg = in.readLine();
 					logMsg.info("New message from server: " + msg);
-					logMsg.info("Add it to the queues");
 					
+					// Add messages to the queues
+					// If there is not enough space it will wait
+					logMsg.info("Add it to the queues");
 					synchronized(lock) {
 						for(int i = 0; i < queue.size(); i++) {
-							queue.get(i).add(msg);
-						}
-					}
+							try {
+								queue.get(i).put(msg);
+							} catch (InterruptedException e) {
+								logMsg.error("Cant put the message in the queue");
+							}
+						}		
+					}		
 				} catch (IOException e) {
 					logMsg.info("Connection to server lost");
 					// Disconnect
